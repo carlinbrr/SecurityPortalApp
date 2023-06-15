@@ -5,10 +5,10 @@ import { Observable } from 'rxjs';
 import { User } from '../model/user';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
-@Injectable({providedIn: 'root'})
+@Injectable({providedIn: 'root'}) //con el provideIn: root no hacer falta wirearlo en el app.module
 export class AuthenticationService {
 
-  private host = environment.apiUrl; //host: String (redundante porque apiUrl ya es string)
+  public host = environment.apiUrl; //host: String (redundante porque apiUrl ya es string)
   private token: string | null;
   private loggedUsername: string | null;
   private jwtHelper = new JwtHelperService();
@@ -54,7 +54,7 @@ export class AuthenticationService {
     return this.token;
   }
 
-  public isLoggedIn(): boolean {
+  public isUserLoggedIn(): boolean {
     this.loadToken();
     if (this.token != null && this.token !== '') {
       if(this.jwtHelper.decodeToken(this.token).sub != null || '') {
