@@ -16,13 +16,13 @@ export class AuthenticationService {
   constructor(private http: HttpClient) {}
 
   //'public' tambien redundante, pero se ha dejado
-  public login(user: User): Observable<HttpResponse<any> | HttpErrorResponse> {
-    return this.http.post<HttpResponse<any> | HttpErrorResponse>
-    (`${this.host}/user/login`, user, {observe: 'response'}); //response: devuelve TODA la response HTTP, headers, body, etc. (por default solo devuelve el body)
+  // HttpErrorResponse por default si falla la peticion
+  public login(user: User):  Observable<HttpResponse<User>> {
+    return this.http.post<User>(`${this.host}/user/login`, user, {observe: 'response'}); //response: devuelve TODA la response HTTP, headers, body, etc. (por default solo devuelve el body)
   }
 
-  public register(user: User): Observable<User | HttpErrorResponse> {
-    return this.http.post<User | HttpErrorResponse> (`${this.host}/user/register`, user); //solo queremos el body
+  public register(user: User): Observable<User> {
+    return this.http.post<User> (`${this.host}/user/register`, user); //solo queremos el body
   }
 
   public logout(): void {
@@ -34,8 +34,10 @@ export class AuthenticationService {
   }
 
   public saveToken(token : string): void {
-    this.token = token;
-    localStorage.setItem('token', token);
+    if (token != null){
+      this.token = token;
+      localStorage.setItem('token', token);
+    }
   }
 
   public addUserToLocalCache(user : User): void {
