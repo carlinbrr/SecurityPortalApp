@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit, OnDestroy{
     if(message) {
       this.notifier.notify(NotificationType, message);
     } else { //Para errores de servidor apagado y eso, se usa esta parte porque no quermos mostrar contenido sensible
-      this.notifier.notify(NotificationType, 'An error occures, please try again');
+      this.notifier.notify(NotificationType, 'An error occured, please try again');
     }
   }
 

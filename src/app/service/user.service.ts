@@ -12,12 +12,12 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  public getUsers(): Observable<User [] | HttpErrorResponse> {
+  public getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.host}/user/list`);
   }
 
-  public addUser(formData : FormData): Observable<User | HttpErrorResponse> {
-    return this.http.post<User>(`${this.host}/user/new`, formData);
+  public addUser(formData : FormData): Observable<User> {
+    return this.http.post<User>(`${this.host}/user/add`, formData);
   }
 
   public updateUser(formData : FormData): Observable<User | HttpErrorResponse> {
@@ -48,9 +48,11 @@ export class UserService {
     return null;
   }
 
-  public createUserFormData(loggedInUsername: string, user: User, profileImage: File) : FormData {
+  public createUserFormData(loggedInUsername: string | null, user: User, profileImage: File) : FormData {
     const formData = new FormData();
-    formData.append('currentUsername', loggedInUsername);
+    if(loggedInUsername) {
+      formData.append('currentUsername', loggedInUsername);
+    }
     formData.append('firstName', user.firstName);
     formData.append('lastName', user.lastName);
     formData.append('username', user.username);
