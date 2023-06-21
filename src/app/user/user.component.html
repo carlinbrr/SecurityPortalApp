@@ -1,1 +1,98 @@
-<p>user works!</p>
+<div class="container">
+    <div class="row mb-2 mt-2 text-center">
+      <div class="col-md-4">
+      </div>
+      <div class="col-md-4">
+        <h5>User Management Portal</h5>
+        <small *ngIf="titleAction$ | async as title"> {{title}}</small>
+      </div>
+      <div class="col-md-4">
+      </div>
+    </div>
+  
+    <!-- nav bar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="nav nav-pills">
+          <a class="nav-item nav-link active ml-1" (click)="changeTitle('Users')" data-toggle="tab">
+            <i class="fa fa-users"></i>
+            Users
+          </a>
+          <a class="nav-item nav-link ml-3" (click)="changeTitle('Settings')" data-toggle="tab">
+            <i class="fa fa-cogs"></i>
+            Settings
+          </a>
+          <a class="nav-item nav-link move-right mr-3" (click)="changeTitle('Profile')" data-toggle="tab">
+            Welcome, Cars
+            <i class="fa fa-user"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+    
+     <!-- main content -->
+    <div class="tab-content mt-3" id="myTabContent">
+        <!-- user table -->
+        <div class="tab-pane fade show active" id="users">
+            <div class="mb-3 float-end">
+                <div class="btn-group mr-2">
+                    <form class="form-inline my-2 my-lg-0 justify-content-center">
+                        <input name="searchTerm" class="form-control mr-sm-2" type="search" placeholder="Search users...">
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addUserModal">
+                        <i class="fa fa-plus"></i> New User
+                    </button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary">
+                        <i class="fas fa-sync fa-spin"></i>
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <thead class="table-borderless">
+                    <tr class="text-center">
+                        <th>Photo</th>
+                        <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <td>
+                        <img height="40" width="40" src="https://www.abc.es/media/play/2020/09/29/avatar-kE4H--1024x512@abc.jpeg" class="rounded-circle " alt=""/>
+                        </td>
+                        <td>123</td>
+                        <td>Carlos</td>
+                        <td>Collaguazo</td>
+                        <td>carlinbrr</td>
+                        <td>carloscollaguazo5@gmail.com</td>
+                        <td> 
+                            <span class="badge text-bg-success">Active</span>
+                            <span class="badge text-bg-danger">Inactive</span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-info">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>    
+                <button [hidden]="true" type="button" id="openUserInfo" data-toggle="modal" data-target="#viewUserModal"></button>
+                <button [hidden]="true" type="button" id="openUserEdit" data-toggle="modal" data-target="#editUserModal"></button>
+            </table>
+        </div>
+    </div>
+</div>
+  
