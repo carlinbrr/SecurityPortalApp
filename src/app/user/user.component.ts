@@ -6,6 +6,7 @@ import { NotificationService } from '../service/notification.service';
 import { NotificationType } from '../enum/notification-type.enum';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
+import { CustomHttpResponse } from '../model/custom-http-response';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   private titleSubject = new BehaviorSubject<string>('Users'); //por default users
   private subscriptions: Subscription[] = [];
+  private currentUsername: string;
 
   public titleAction$ = this.titleSubject.asObservable();
   public users: User[];
@@ -24,7 +26,7 @@ export class UserComponent implements OnInit, OnDestroy {
   public selectedUser: User;
   public profileImage: File | null;
   public fileName: string | null;
-  
+  public editUser = new User();
 
   constructor(private userService: UserService, private notificationService: NotificationService) { }
 
@@ -58,7 +60,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public onSelectUser(selectUser: User): void {
     this.selectedUser = selectUser;
-    document.getElementById('openUserInfo')?.click();
+    this.clickButton('openUserInfo');
   }
 
   public onProfileImageChange(event: any): void {
@@ -68,7 +70,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   public saveNewUser(): void {
-    document.getElementById('new-user-save')?.click();
+    this.clickButton('new-user-save');
   }
 
   public onAddNewUser(userForm: NgForm): void {
@@ -77,7 +79,7 @@ export class UserComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.addUser(formData).subscribe(
         (response: User) => {
-          document.getElementById('new-user-close')?.click();
+          this.clickButton('new-user-close');
           this.getUsers(false);
           this.fileName = null;
           this.profileImage = null;
@@ -87,9 +89,85 @@ export class UserComponent implements OnInit, OnDestroy {
         ,
         (errorResponse: HttpErrorResponse) => {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.profileImage = null;
         }
       )
     )
+  }
+
+  public onUpdateUser(): void {
+    console.log(this.editUser);
+    const formData = this.userService.createUserFormData(this.currentUsername, this.editUser, this.profileImage!);
+    this.subscriptions.push(
+      this.userService.updateUser(formData).subscribe(
+        (response: User) => {
+          this.clickButton('closeEditUserModalButton');
+          this.getUsers(false);
+          this.fileName = null;
+          this.profileImage = null;
+          this.sendNotification(NotificationType.SUCCESS, `${response.firstName} ${response.lastName} updated succesfully`);
+          }
+        ,
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.profileImage = null;
+        }
+      )
+    )
+  }
+
+  public searchUsers(searchTerm: string): void {
+    const results: User[] = [];
+    for (const user of this.userService.getUsersFromLocalCache()!) {
+      if(user.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 || 
+          user.lastName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+            user.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+              user.userId.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
+                results.push(user);
+      }
+    }
+    this.users = results;
+    if(!searchTerm) {
+      this.users = this.userService.getUsersFromLocalCache()!;
+    }
+  }
+
+  public onEditUser(editUser: User): void {
+    this.editUser = editUser;
+    this.currentUsername = editUser.username;
+    this.clickButton('openUserEdit');
+  }
+
+  public onDeleteUser(id: number): void {
+    this.subscriptions.push(
+      this.userService.deleteUser(id).subscribe(
+        (response: CustomHttpResponse) => {
+          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.getUsers(true);
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      )
+    );
+  }
+
+  public onResetPassword(emailFrom: NgForm): void {
+    this.refreshing = true;
+    const emailAddress = emailFrom.value['reset-password-email'];
+    this.subscriptions.push(
+      this.userService.resetPassword(emailAddress).subscribe(
+        (response: CustomHttpResponse) => {
+          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.refreshing = false;
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.WARNING, errorResponse.error.message);
+          this.refreshing = false;
+        },
+        () => emailFrom.reset() //siempre se ejecuta, como un finally
+      )
+    );
   }
 
   private sendNotification(NotificationType: NotificationType, message: string): void {
@@ -98,6 +176,10 @@ export class UserComponent implements OnInit, OnDestroy {
     } else { //Para errores de servidor apagado y eso, se usa esta parte porque no quermos mostrar contenido sensible
       this.notificationService.notify(NotificationType, 'An error occurred, please try again');
     }
+  }
+
+  private clickButton(buttonId: string): void {
+    document.getElementById(buttonId)?.click();
   }
   
   ngOnDestroy(): void {

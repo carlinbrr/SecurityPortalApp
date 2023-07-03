@@ -20,28 +20,28 @@ export class UserService {
     return this.http.post<User>(`${this.host}/user/add`, formData);
   }
 
-  public updateUser(formData : FormData): Observable<User | HttpErrorResponse> {
+  public updateUser(formData : FormData): Observable<User> {
     return this.http.post<User>(`${this.host}/user/update`, formData);
   }
 
-  public resetPassword(email : string): Observable<CustomHttpResponse | HttpErrorResponse> {
+  public resetPassword(email : string): Observable<CustomHttpResponse> {
     return this.http.get<CustomHttpResponse>(`${this.host}/user/reset-password/${email}`);
   }
 
-  public updateProfileImage(formData : FormData): Observable<HttpEvent<User> | HttpErrorResponse> {
+  public updateProfileImage(formData : FormData): Observable<HttpEvent<User>> {
     return this.http.post<User>(`${this.host}/user/update-profile-image`, formData, 
     {reportProgress: true, observe: 'events'});
   }
 
-  public deleteUser(userId : number): Observable<CustomHttpResponse | HttpErrorResponse> {
-    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${userId}`);
+  public deleteUser(id : number): Observable<CustomHttpResponse> {
+    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${id}`);
   }
   
   public addUsersToLocalCache(users: User[]): void {
     localStorage.setItem('users', JSON.stringify(users));
   }
 
-  public getUsersFromLocalCache(): User | null {
+  public getUsersFromLocalCache(): User [] | null {
     if(localStorage.getItem('users')) {
       return JSON.parse(localStorage.getItem('users')!);
     }

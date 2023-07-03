@@ -6,8 +6,9 @@ export class User {
     public lastName: string;
     public username: string;
     public email: string;
-    public lastLoginDateDisplay: Date;
-    public joinDate: Date;
+    public lastLoginDate: Date | null;
+    public lastLoginDateDisplay: Date | null;
+    public joinDate: Date | null;
     public profileImgUrl: string;
     public active: boolean;
     public notLocked: boolean;
@@ -15,10 +16,16 @@ export class User {
     public authorities: [];
 
     constructor(){
+        this.id = 0;
+        this.userId = '';
         this.firstName = '';
         this.lastName = '';
         this.username = '';
         this.email = '';
+        this.lastLoginDate = null;
+        this.lastLoginDateDisplay = null;
+        this.joinDate = null;
+        this.profileImgUrl = '';
         this.active = false;
         this.notLocked = false;
         this.role = '';
