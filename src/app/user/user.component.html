@@ -84,7 +84,7 @@
                                 <button class="btn btn-outline-info" (click)="onEditUser(appUser)">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-outline-danger" (click)="onDeleteUser(appUser.id)">
+                                <button class="btn btn-outline-danger" (click)="onDeleteUser(appUser.username)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -144,7 +144,8 @@
                                                         <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user?.firstName}} {{user?.lastName}}</h4>
                                                         <p class="mb-0">{{user?.username}}</p>
                                                         <div class="text-muted">
-                                                            <small>Last login: {{user?.lastLoginDateDisplay | date: 'medium'}}</small>
+                                                            <small *ngIf="user?.lastLoginDateDisplay">Last login: {{user?.lastLoginDateDisplay | date: 'medium'}}</small>
+                                                            <small *ngIf="!user?.lastLoginDateDisplay">Last login: - </small>
                                                         </div>
                                                         <div class="mt-2">
                                                             <button (click)="updateProfileImage()" class="btn btn-primary" type="button">
@@ -334,9 +335,9 @@
                                         <i class="fas fa-shield-alt float-right"></i>
                                         {{selectedUser?.role?.substring(5)}}
                                     </li>
-                                    <li *ngIf="selectedUser?.lastLoginDateDisplay" class="list-group-item">
+                                    <li *ngIf="selectedUser?.lastLoginDate" class="list-group-item">
                                         <i class="fas fa-sign-in-alt float-right"></i>
-                                        {{selectedUser?.lastLoginDateDisplay | date: 'medium'}}
+                                        {{selectedUser?.lastLoginDate | date: 'medium'}}
                                     </li>
                                     <li class="list-group-item">
                                         <span [hidden]="selectedUser?.notLocked">
@@ -492,7 +493,7 @@
                                     <div class="form-check">
                                         <label class="form-check-label">
                                             <input type="checkbox" name="active" ngModel class="form-check-input">
-                                             Acitve 
+                                             Active 
                                         </label>
                                     </div>
                                     <div class="form-check disabled">

@@ -8,7 +8,7 @@ import { AuthenticationGuard } from './guard/authentication.guard';
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard]},
+  {path: 'user/management', component: UserComponent, canActivate: [AuthenticationGuard]}, // se usa el guard
   {path: '', redirectTo: '/login', pathMatch: 'full'} //redirigir si se da una ruta que no existe, poner al final siempre (sigue orden)
 ];
 

@@ -17,8 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authenticationService: AuthenticationService) {}
 
   intercept(httpRequest: HttpRequest<unknown>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
-    if(httpRequest.url.includes('login') || httpRequest.url.includes('register') || 
-        httpRequest.url.includes('reset-password')) {
+    if(httpRequest.url.includes('login') || httpRequest.url.includes('register')) {
       return httpHandler.handle(httpRequest);
     } 
     this.authenticationService.loadToken();
