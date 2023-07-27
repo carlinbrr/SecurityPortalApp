@@ -84,6 +84,9 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public onAddNewUser(userForm: NgForm): void {
     console.log(userForm.value);
+    if(!this.isAdmin){
+      userForm.value.role = `ROLE_${userForm.value.role}`
+    }
     const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage!);
     this.subs.add(
       this.userService.addUser(formData).subscribe(
@@ -182,6 +185,9 @@ export class UserComponent implements OnInit, OnDestroy {
 
   public onUpdateCurrentUser(user: User): void {
     this.refreshing = true;
+    if(!this.isAdmin) {
+      user.role = this.authenticationService.getUserFromLocalCache().role;
+    }
     this.currentUsername = this.authenticationService.getUserFromLocalCache().username;
     const formData = this.userService.createUserFormData(this.currentUsername, user, this.profileImage!);
     this.subs.add(
