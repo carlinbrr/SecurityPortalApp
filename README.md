@@ -1,5 +1,5 @@
 # SupportPortalApp
-FrontEnd application devloped with Angular. Consumes SecuritProject API REST
+FrontEnd application developed with Angular. Consumes SecuritProject API REST
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.0.
 
